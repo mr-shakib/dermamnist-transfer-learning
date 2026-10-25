@@ -1,0 +1,16 @@
+{
+  "silhouette_cosine": {
+    "ImageNet (before fine-tuning)": -0.0388394296169281,
+    "fine-tuned": 0.08036498725414276
+  },
+  "sanity_test_metrics": {
+    "accuracy": 0.8613466334164589,
+    "balanced_accuracy": 0.7630551291375217,
+    "macro_f1": 0.7720028249114064,
+    "weighted_f1": 0.8643437107575304,
+    "macro_auc": 0.9554489038790971,
+    "cohen_kappa": 0.7449641643972005,
+    "ece": 0.08414602196424678,
+    "nll": 0.5109229683876038
+  }
+}

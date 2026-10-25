@@ -1,0 +1,136 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit,backgrounds,calc}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{diublue}{HTML}{0B4EA2}
+\definecolor{diugreen}{HTML}{2E9E44}
+\definecolor{ink}{HTML}{0B0B0B}
+\definecolor{ink2}{HTML}{52514E}
+\definecolor{boxblue}{HTML}{E8F1FC}
+\definecolor{boxorange}{HTML}{FDEEE6}
+\definecolor{boxgreen}{HTML}{E6F6EF}
+\definecolor{rulegray}{HTML}{D9D8D4}
+
+\titleformat{\section}{\Large\bfseries\color{diublue}}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\large\bfseries\color{ink}}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{ink}}{\thesubsubsection}{0.6em}{}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\captionsetup{font=small,labelfont=bf,margin=0.5cm}
+\setlist{itemsep=0.15em,topsep=0.3em}
+
+\lstset{basicstyle=\ttfamily\small,columns=fullflexible,breaklines=true,frame=single,
+  rulecolor=\color{rulegray},backgroundcolor=\color{boxblue!40},xleftmargin=0.5em,xrightmargin=0.5em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{ink2}Deep Learning --- Group Assignment 1 (CT-1)}
+\fancyhead[R]{\small\color{ink2}Task 2: Transfer Learning}
+\fancyfoot[L]{\small\color{ink2}Shakib Howlader (262-25-013)}
+\fancyfoot[R]{\small\color{ink2}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\makeatletter
+\newcommand{\inputrows}[1]{\@@input #1 }  % primitive \input: safe inside tabular rows
+\makeatother
+\setlength{\emergencystretch}{2em}
+
+\newcommand{\repo}{https://github.com/mr-shakib/dermamnist-transfer-learning}
+\input{generated/numbers.tex}
+
+\begin{document}
+
+%======================== COVER PAGE ========================
+\begin{titlepage}
+\centering
+\includegraphics[width=0.30\textwidth]{figures/diu_cse_logo.png}\par
+\vspace{0.6cm}
+{\LARGE\bfseries\color{diublue} Daffodil International University\par}
+\vspace{0.15cm}
+{\large Department of Computer Science and Engineering\par}
+{\normalsize Faculty of Science and Information Technology\par}
+\vspace{0.9cm}
+{\large\bfseries M.Sc.\ in Computer Science and Engineering\par}
+{\large Course: Deep Learning \quad$\cdot$\quad Fall 2026\par}
+\vspace{0.5cm}
+{\color{diugreen}\rule{0.8\textwidth}{1.2pt}\par}
+\vspace{0.35cm}
+{\large\bfseries Group Assignment 1 (CT-1)\par}
+{\normalsize Task 2 --- CNN / Transfer Learning / Fine-tuning\par}
+\vspace{0.45cm}
+{\Large\bfseries\color{ink} Transfer Learning for Dermatoscopic\\[0.15cm] Skin-Lesion Classification\par}
+\vspace{0.2cm}
+{\large Fine-tuning ImageNet-pretrained CNNs on DermaMNIST (HAM10000)\par}
+\vspace{0.35cm}
+{\color{diugreen}\rule{0.8\textwidth}{1.2pt}\par}
+\vspace{0.9cm}
+
+{\large\bfseries Submitted by\par}
+\vspace{0.25cm}
+\begin{tabular}{>{\raggedright\arraybackslash}p{5.2cm} >{\raggedright\arraybackslash}p{4.0cm}}
+\toprule
+\textbf{Member name} & \textbf{Student ID} \\
+\midrule
+Shakib Howlader & 262-25-013 \\
+\bottomrule
+\end{tabular}
+\par\vspace{0.8cm}
+
+{\large\bfseries Submitted to\par}
+\vspace{0.15cm}
+Course Instructor, Deep Learning\\
+Department of Computer Science and Engineering\\
+Daffodil International University\par
+\vfill
+\begin{tabular}{rl}
+\textbf{Date of submission:} & 26 October 2026 \\
+\textbf{Codebase:} & \href{\repo}{\texttt{github.com/mr-shakib/dermamnist-transfer-learning}} \\
+\end{tabular}
+\end{titlepage}
+
+%======================== ABSTRACT + TOC ========================
+\pagenumbering{roman}
+\section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+\input{sections/abstract.tex}
+
+\vspace{0.6cm}
+\tableofcontents
+\clearpage
+\listoffigures
+\listoftables
+\clearpage
+\pagenumbering{arabic}
+
+\input{sections/introduction.tex}
+\input{sections/data_analysis.tex}
+\input{sections/workflow.tex}
+\input{sections/modeling.tex}
+\input{sections/performance.tex}
+\input{sections/summary.tex}
+\input{sections/codebase.tex}
+\input{sections/references.tex}
+\appendix
+\input{sections/appendix.tex}
+
+\end{document}

@@ -1,0 +1,7 @@
+SimpleCNN (scratch) & 1.18 & 1.18 & 19/27 & 48.6 & 73.6 & 49.4 & 48.0 \scriptsize[44.6, 51.0] & 0.908 & 0.163 \\
+ResNet-50 (frozen) & 23.52 & 0.01 & 9/10 & 55.4 & 76.5 & 56.6 & 55.9 \scriptsize[51.3, 60.3] & 0.920 & 0.198 \\
+EfficientNet-B0 (frozen) & 4.02 & 0.01 & 10/10 & 59.1 & 75.3 & 63.5 & 59.4 \scriptsize[55.2, 63.0] & 0.929 & 0.171 \\
+\textbf{ResNet-50 (fine-tune)} & \textbf{23.52} & \textbf{23.52} & \textbf{11/12} & \textbf{79.5} & \textbf{86.1} & \textbf{76.3} & \textbf{77.2 \scriptsize[73.4, 80.5]} & \textbf{0.955} & \textbf{0.084} \\
+ResNet-50 (gradual unfreeze) & 23.52 & 23.52 & 6/12 & 70.6 & 83.0 & 74.1 & 73.2 \scriptsize[69.3, 76.4] & 0.958 & 0.133 \\
+EfficientNet-B0 (fine-tune) & 4.02 & 4.02 & 11/12 & 73.4 & 84.8 & 76.0 & 72.9 \scriptsize[69.0, 76.3] & 0.959 & 0.103 \\
+ResNet-50 (fine-tune, unweighted CE) & 23.52 & 23.52 & 11/12 & 77.1 & 86.9 & 71.8 & 75.7 \scriptsize[71.7, 79.4] & 0.971 & 0.024 \\

@@ -1,0 +1,303 @@
+\newcommand{\MajorityAcc}{66.9}
+\newcommand{\NumRuns}{7}
+\newcommand{\DatasetSizeMB}{1{,}091}
+\newcommand{\TorchVersion}{2.14.1}
+\newcommand{\BestLabel}{ResNet-50 (fine-tune)}
+\newcommand{\BestTTA}{with 8-view TTA}
+\newcommand{\ScratchAcc}{73.6}
+\newcommand{\ScratchBalAcc}{49.4}
+\newcommand{\ScratchFOne}{48.0}
+\newcommand{\ScratchAUC}{0.908}
+\newcommand{\ScratchECE}{0.163}
+\newcommand{\ScratchWFOne}{73.6}
+\newcommand{\ScratchKappa}{0.502}
+\newcommand{\ScratchAccTTA}{74.8}
+\newcommand{\ScratchBalAccTTA}{52.2}
+\newcommand{\ScratchFOneTTA}{50.6}
+\newcommand{\ScratchAUCTTA}{0.911}
+\newcommand{\ScratchECETTA}{0.176}
+\newcommand{\ScratchWFOneTTA}{74.7}
+\newcommand{\ScratchKappaTTA}{0.525}
+\newcommand{\ScratchAccVal}{74.3}
+\newcommand{\ScratchBalAccVal}{47.2}
+\newcommand{\ScratchFOneVal}{48.6}
+\newcommand{\ScratchAUCVal}{0.914}
+\newcommand{\ScratchECEVal}{0.174}
+\newcommand{\ScratchWFOneVal}{74.2}
+\newcommand{\ScratchKappaVal}{0.509}
+\newcommand{\ScratchFOneCI}{[44.6, 51.0]}
+\newcommand{\ScratchAccCI}{[71.5, 75.5]}
+\newcommand{\ScratchAUCCI}{[0.894, 0.921]}
+\newcommand{\ScratchFOneTTACI}{[47.4, 53.2]}
+\newcommand{\ScratchAccTTACI}{[72.8, 76.8]}
+\newcommand{\ScratchBalAccTTACI}{[49.1, 55.1]}
+\newcommand{\ScratchAUCTTACI}{[0.897, 0.924]}
+\newcommand{\ScratchBestEpoch}{19}
+\newcommand{\ScratchEpochTime}{19}
+\newcommand{\ScratchTrainMin}{8.9}
+\newcommand{\ScratchFOneAkiec}{37.9}
+\newcommand{\ScratchFOneBcc}{40.6}
+\newcommand{\ScratchFOneBkl}{50.0}
+\newcommand{\ScratchFOneDf}{0.0}
+\newcommand{\ScratchFOneMel}{48.4}
+\newcommand{\ScratchFOneNv}{87.2}
+\newcommand{\ScratchFOneVasc}{72.1}
+\newcommand{\RFrozenAcc}{76.5}
+\newcommand{\RFrozenBalAcc}{56.6}
+\newcommand{\RFrozenFOne}{55.9}
+\newcommand{\RFrozenAUC}{0.920}
+\newcommand{\RFrozenECE}{0.198}
+\newcommand{\RFrozenWFOne}{76.8}
+\newcommand{\RFrozenKappa}{0.563}
+\newcommand{\RFrozenAccTTA}{77.2}
+\newcommand{\RFrozenBalAccTTA}{57.4}
+\newcommand{\RFrozenFOneTTA}{57.8}
+\newcommand{\RFrozenAUCTTA}{0.926}
+\newcommand{\RFrozenECETTA}{0.207}
+\newcommand{\RFrozenWFOneTTA}{77.4}
+\newcommand{\RFrozenKappaTTA}{0.575}
+\newcommand{\RFrozenAccVal}{76.4}
+\newcommand{\RFrozenBalAccVal}{55.4}
+\newcommand{\RFrozenFOneVal}{55.4}
+\newcommand{\RFrozenAUCVal}{0.918}
+\newcommand{\RFrozenECEVal}{0.201}
+\newcommand{\RFrozenWFOneVal}{76.7}
+\newcommand{\RFrozenKappaVal}{0.561}
+\newcommand{\RFrozenFOneCI}{[51.3, 60.3]}
+\newcommand{\RFrozenAccCI}{[74.3, 78.3]}
+\newcommand{\RFrozenAUCCI}{[0.905, 0.934]}
+\newcommand{\RFrozenFOneTTACI}{[53.1, 62.2]}
+\newcommand{\RFrozenAccTTACI}{[75.3, 79.0]}
+\newcommand{\RFrozenBalAccTTACI}{[53.3, 62.2]}
+\newcommand{\RFrozenAUCTTACI}{[0.912, 0.939]}
+\newcommand{\RFrozenBestEpoch}{9}
+\newcommand{\RFrozenEpochTime}{20}
+\newcommand{\RFrozenTrainMin}{3.9}
+\newcommand{\RFrozenFOneAkiec}{46.2}
+\newcommand{\RFrozenFOneBcc}{52.5}
+\newcommand{\RFrozenFOneBkl}{57.7}
+\newcommand{\RFrozenFOneDf}{38.9}
+\newcommand{\RFrozenFOneMel}{47.8}
+\newcommand{\RFrozenFOneNv}{89.2}
+\newcommand{\RFrozenFOneVasc}{59.2}
+\newcommand{\EFrozenAcc}{75.3}
+\newcommand{\EFrozenBalAcc}{63.5}
+\newcommand{\EFrozenFOne}{59.4}
+\newcommand{\EFrozenAUC}{0.929}
+\newcommand{\EFrozenECE}{0.171}
+\newcommand{\EFrozenWFOne}{76.5}
+\newcommand{\EFrozenKappa}{0.561}
+\newcommand{\EFrozenAccTTA}{76.7}
+\newcommand{\EFrozenBalAccTTA}{62.6}
+\newcommand{\EFrozenFOneTTA}{59.3}
+\newcommand{\EFrozenAUCTTA}{0.935}
+\newcommand{\EFrozenECETTA}{0.188}
+\newcommand{\EFrozenWFOneTTA}{77.7}
+\newcommand{\EFrozenKappaTTA}{0.581}
+\newcommand{\EFrozenAccVal}{76.0}
+\newcommand{\EFrozenBalAccVal}{62.9}
+\newcommand{\EFrozenFOneVal}{59.1}
+\newcommand{\EFrozenAUCVal}{0.932}
+\newcommand{\EFrozenECEVal}{0.183}
+\newcommand{\EFrozenWFOneVal}{77.0}
+\newcommand{\EFrozenKappaVal}{0.571}
+\newcommand{\EFrozenFOneCI}{[55.2, 63.0]}
+\newcommand{\EFrozenAccCI}{[73.4, 77.2]}
+\newcommand{\EFrozenAUCCI}{[0.916, 0.941]}
+\newcommand{\EFrozenFOneTTACI}{[55.2, 63.0]}
+\newcommand{\EFrozenAccTTACI}{[74.9, 78.6]}
+\newcommand{\EFrozenBalAccTTACI}{[58.6, 66.8]}
+\newcommand{\EFrozenAUCTTACI}{[0.922, 0.947]}
+\newcommand{\EFrozenBestEpoch}{10}
+\newcommand{\EFrozenEpochTime}{10}
+\newcommand{\EFrozenTrainMin}{1.9}
+\newcommand{\EFrozenFOneAkiec}{48.6}
+\newcommand{\EFrozenFOneBcc}{57.3}
+\newcommand{\EFrozenFOneBkl}{56.5}
+\newcommand{\EFrozenFOneDf}{53.8}
+\newcommand{\EFrozenFOneMel}{46.2}
+\newcommand{\EFrozenFOneNv}{88.4}
+\newcommand{\EFrozenFOneVasc}{64.8}
+\newcommand{\RFineAcc}{86.1}
+\newcommand{\RFineBalAcc}{76.3}
+\newcommand{\RFineFOne}{77.2}
+\newcommand{\RFineAUC}{0.955}
+\newcommand{\RFineECE}{0.084}
+\newcommand{\RFineWFOne}{86.4}
+\newcommand{\RFineKappa}{0.745}
+\newcommand{\RFineAccTTA}{87.0}
+\newcommand{\RFineBalAccTTA}{79.2}
+\newcommand{\RFineFOneTTA}{80.1}
+\newcommand{\RFineAUCTTA}{0.962}
+\newcommand{\RFineECETTA}{0.102}
+\newcommand{\RFineWFOneTTA}{87.3}
+\newcommand{\RFineKappaTTA}{0.761}
+\newcommand{\RFineAccVal}{85.2}
+\newcommand{\RFineBalAccVal}{78.8}
+\newcommand{\RFineFOneVal}{79.5}
+\newcommand{\RFineAUCVal}{0.961}
+\newcommand{\RFineECEVal}{0.087}
+\newcommand{\RFineWFOneVal}{86.0}
+\newcommand{\RFineKappaVal}{0.733}
+\newcommand{\RFineFOneCI}{[73.4, 80.5]}
+\newcommand{\RFineAccCI}{[84.6, 87.5]}
+\newcommand{\RFineAUCCI}{[0.939, 0.968]}
+\newcommand{\RFineFOneTTACI}{[76.6, 83.0]}
+\newcommand{\RFineAccTTACI}{[85.5, 88.4]}
+\newcommand{\RFineBalAccTTACI}{[75.3, 82.9]}
+\newcommand{\RFineAUCTTACI}{[0.948, 0.974]}
+\newcommand{\RFineBestEpoch}{11}
+\newcommand{\RFineEpochTime}{66}
+\newcommand{\RFineTrainMin}{13.8}
+\newcommand{\RFineFOneAkiec}{58.9}
+\newcommand{\RFineFOneBcc}{81.9}
+\newcommand{\RFineFOneBkl}{73.6}
+\newcommand{\RFineFOneDf}{74.4}
+\newcommand{\RFineFOneMel}{69.0}
+\newcommand{\RFineFOneNv}{93.3}
+\newcommand{\RFineFOneVasc}{89.3}
+\newcommand{\EFineAcc}{84.8}
+\newcommand{\EFineBalAcc}{76.0}
+\newcommand{\EFineFOne}{72.9}
+\newcommand{\EFineAUC}{0.959}
+\newcommand{\EFineECE}{0.103}
+\newcommand{\EFineWFOne}{85.0}
+\newcommand{\EFineKappa}{0.718}
+\newcommand{\EFineAccTTA}{86.1}
+\newcommand{\EFineBalAccTTA}{79.2}
+\newcommand{\EFineFOneTTA}{75.6}
+\newcommand{\EFineAUCTTA}{0.966}
+\newcommand{\EFineECETTA}{0.127}
+\newcommand{\EFineWFOneTTA}{86.3}
+\newcommand{\EFineKappaTTA}{0.744}
+\newcommand{\EFineAccVal}{85.7}
+\newcommand{\EFineBalAccVal}{78.6}
+\newcommand{\EFineFOneVal}{73.4}
+\newcommand{\EFineAUCVal}{0.971}
+\newcommand{\EFineECEVal}{0.116}
+\newcommand{\EFineWFOneVal}{85.8}
+\newcommand{\EFineKappaVal}{0.739}
+\newcommand{\EFineFOneCI}{[69.0, 76.3]}
+\newcommand{\EFineAccCI}{[83.1, 86.3]}
+\newcommand{\EFineAUCCI}{[0.948, 0.968]}
+\newcommand{\EFineFOneTTACI}{[71.7, 79.0]}
+\newcommand{\EFineAccTTACI}{[84.6, 87.6]}
+\newcommand{\EFineBalAccTTACI}{[76.0, 82.3]}
+\newcommand{\EFineAUCTTACI}{[0.957, 0.975]}
+\newcommand{\EFineBestEpoch}{11}
+\newcommand{\EFineEpochTime}{32}
+\newcommand{\EFineTrainMin}{6.6}
+\newcommand{\EFineFOneAkiec}{54.7}
+\newcommand{\EFineFOneBcc}{78.1}
+\newcommand{\EFineFOneBkl}{72.0}
+\newcommand{\EFineFOneDf}{59.0}
+\newcommand{\EFineFOneMel}{64.5}
+\newcommand{\EFineFOneNv}{92.9}
+\newcommand{\EFineFOneVasc}{88.9}
+\newcommand{\RGradAcc}{83.0}
+\newcommand{\RGradBalAcc}{74.1}
+\newcommand{\RGradFOne}{73.2}
+\newcommand{\RGradAUC}{0.958}
+\newcommand{\RGradECE}{0.133}
+\newcommand{\RGradWFOne}{83.7}
+\newcommand{\RGradKappa}{0.694}
+\newcommand{\RGradAccTTA}{84.2}
+\newcommand{\RGradBalAccTTA}{76.6}
+\newcommand{\RGradFOneTTA}{76.5}
+\newcommand{\RGradAUCTTA}{0.968}
+\newcommand{\RGradECETTA}{0.152}
+\newcommand{\RGradWFOneTTA}{84.9}
+\newcommand{\RGradKappaTTA}{0.715}
+\newcommand{\RGradAccVal}{82.4}
+\newcommand{\RGradBalAccVal}{71.5}
+\newcommand{\RGradFOneVal}{70.6}
+\newcommand{\RGradAUCVal}{0.951}
+\newcommand{\RGradECEVal}{0.127}
+\newcommand{\RGradWFOneVal}{83.0}
+\newcommand{\RGradKappaVal}{0.684}
+\newcommand{\RGradFOneCI}{[69.3, 76.4]}
+\newcommand{\RGradAccCI}{[81.3, 84.6]}
+\newcommand{\RGradAUCCI}{[0.946, 0.968]}
+\newcommand{\RGradFOneTTACI}{[72.7, 79.5]}
+\newcommand{\RGradAccTTACI}{[82.7, 85.8]}
+\newcommand{\RGradBalAccTTACI}{[72.6, 80.3]}
+\newcommand{\RGradAUCTTACI}{[0.958, 0.977]}
+\newcommand{\RGradBestEpoch}{6}
+\newcommand{\RGradEpochTime}{45}
+\newcommand{\RGradTrainMin}{9.7}
+\newcommand{\RGradFOneAkiec}{64.8}
+\newcommand{\RGradFOneBcc}{72.2}
+\newcommand{\RGradFOneBkl}{70.4}
+\newcommand{\RGradFOneDf}{65.1}
+\newcommand{\RGradFOneMel}{62.4}
+\newcommand{\RGradFOneNv}{91.5}
+\newcommand{\RGradFOneVasc}{86.2}
+\newcommand{\RNoWAcc}{86.9}
+\newcommand{\RNoWBalAcc}{71.8}
+\newcommand{\RNoWFOne}{75.7}
+\newcommand{\RNoWAUC}{0.971}
+\newcommand{\RNoWECE}{0.024}
+\newcommand{\RNoWWFOne}{87.0}
+\newcommand{\RNoWKappa}{0.754}
+\newcommand{\RNoWAccTTA}{88.8}
+\newcommand{\RNoWBalAccTTA}{74.8}
+\newcommand{\RNoWFOneTTA}{78.5}
+\newcommand{\RNoWAUCTTA}{0.979}
+\newcommand{\RNoWECETTA}{0.037}
+\newcommand{\RNoWWFOneTTA}{88.8}
+\newcommand{\RNoWKappaTTA}{0.788}
+\newcommand{\RNoWAccVal}{86.6}
+\newcommand{\RNoWBalAccVal}{75.2}
+\newcommand{\RNoWFOneVal}{77.1}
+\newcommand{\RNoWAUCVal}{0.970}
+\newcommand{\RNoWECEVal}{0.035}
+\newcommand{\RNoWWFOneVal}{86.7}
+\newcommand{\RNoWKappaVal}{0.750}
+\newcommand{\RNoWFOneCI}{[71.7, 79.4]}
+\newcommand{\RNoWAccCI}{[85.5, 88.4]}
+\newcommand{\RNoWAUCCI}{[0.963, 0.979]}
+\newcommand{\RNoWFOneTTACI}{[74.8, 82.0]}
+\newcommand{\RNoWAccTTACI}{[87.4, 90.0]}
+\newcommand{\RNoWBalAccTTACI}{[71.1, 79.4]}
+\newcommand{\RNoWAUCTTACI}{[0.973, 0.985]}
+\newcommand{\RNoWBestEpoch}{11}
+\newcommand{\RNoWEpochTime}{67}
+\newcommand{\RNoWTrainMin}{14.1}
+\newcommand{\RNoWFOneAkiec}{58.1}
+\newcommand{\RNoWFOneBcc}{81.0}
+\newcommand{\RNoWFOneBkl}{75.4}
+\newcommand{\RNoWFOneDf}{68.4}
+\newcommand{\RNoWFOneMel}{68.7}
+\newcommand{\RNoWFOneNv}{94.3}
+\newcommand{\RNoWFOneVasc}{84.0}
+\newcommand{\BestPrecAkiec}{93.8}
+\newcommand{\BestRecAkiec}{45.5}
+\newcommand{\BestFOneAkiec}{61.2}
+\newcommand{\BestAUCAkiec}{0.863}
+\newcommand{\BestPrecBcc}{79.8}
+\newcommand{\BestRecBcc}{88.3}
+\newcommand{\BestFOneBcc}{83.9}
+\newcommand{\BestAUCBcc}{0.989}
+\newcommand{\BestPrecBkl}{72.8}
+\newcommand{\BestRecBkl}{84.1}
+\newcommand{\BestFOneBkl}{78.1}
+\newcommand{\BestAUCBkl}{0.979}
+\newcommand{\BestPrecDf}{86.4}
+\newcommand{\BestRecDf}{82.6}
+\newcommand{\BestFOneDf}{84.4}
+\newcommand{\BestAUCDf}{0.971}
+\newcommand{\BestPrecMel}{61.0}
+\newcommand{\BestRecMel}{80.7}
+\newcommand{\BestFOneMel}{69.5}
+\newcommand{\BestAUCMel}{0.959}
+\newcommand{\BestPrecNv}{96.1}
+\newcommand{\BestRecNv}{90.6}
+\newcommand{\BestFOneNv}{93.3}
+\newcommand{\BestAUCNv}{0.977}
+\newcommand{\BestPrecVasc}{100.0}
+\newcommand{\BestRecVasc}{82.8}
+\newcommand{\BestFOneVasc}{90.6}
+\newcommand{\BestAUCVasc}{1.000}
+\newcommand{\SilImageNet}{-0.039}
+\newcommand{\SilFineTuned}{0.080}
+\newcommand{\TotalTrainMin}{59}

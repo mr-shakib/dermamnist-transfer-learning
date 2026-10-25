@@ -1,0 +1,71 @@
+\section{Discussion and Summary}
+\label{sec:summary}
+
+\subsection{Summary of findings}
+This assignment studied transfer learning for seven-class dermatoscopic skin-lesion classification on DermaMNIST
+(HAM10000, 224$\times$224). Seven controlled experiments led to five conclusions:
+\begin{enumerate}
+  \item \textbf{Pretraining matters most.} Fine-tuning an ImageNet ResNet-50 lifts test macro-F1 from
+        \ScratchFOne\% (CNN trained from scratch) to \RFineFOne\%, and accuracy from \ScratchAcc\% to
+        \RFineAcc\%.
+  \item \textbf{Fine-tune, do not freeze.} Frozen ImageNet features reach only \RFrozenFOne--\EFrozenFOne\%
+        macro-F1. The dermatoscopic domain is far enough from ImageNet that the backbone itself must adapt;
+        discriminative learning rates with warm-up make this stable.
+  \item \textbf{Gradual unfreezing did not help} in a 12-epoch budget (\RGradFOne\% vs \RFineFOne\%), although it
+        is cheaper and ranks well (AUC \RGradAUC).
+  \item \textbf{Class weighting trades accuracy and calibration for minority-class recall.} Balanced accuracy goes
+        up 4.5 points, \texttt{df}/\texttt{vasc} F1 up 5--6 points, and accuracy down 0.8 points. ECE worsens from
+        \RNoWECE{} to \RFineECE.
+  \item \textbf{8-view TTA is a reliable, free-to-train gain.} It improves accuracy and AUC for every model.
+\end{enumerate}
+
+The final model, \textbf{ResNet-50 with full fine-tuning and 8-view TTA}, selected on validation only, reaches
+\textbf{\RFineAccTTA\% accuracy}, \textbf{\RFineBalAccTTA\% balanced accuracy}, \textbf{\RFineFOneTTA\% macro-F1}
+(95\% CI \RFineFOneTTACI) and \textbf{macro-AUC \RFineAUCTTA} on the held-out test set. That is about 10 accuracy
+points above the best result in the official MedMNIST v2 benchmark table. It detects \BestRecMel\% of melanomas,
+and its errors are concentrated in the clinically hard \texttt{mel}/\texttt{nv} and
+\texttt{akiec}/\texttt{bkl} pairs. Grad-CAM shows that its evidence usually lies on the lesion itself.
+
+\subsection{Limitations}
+\label{sec:limitations}
+\begin{itemize}
+  \item \textbf{Same-lesion leakage.} The official split is image-level. Our audit (Section~\ref{sec:leakage})
+        found re-photographed training lesions in the test set, so the absolute scores are probably slightly
+        optimistic. A lesion-level split needs the HAM10000 metadata, which DermaMNIST does not ship.
+  \item \textbf{Single seed and single split.} Each configuration was trained once (seed 42). The bootstrap CIs
+        capture test-set sampling noise but not training variance. Several of the closer comparisons
+        (ResNet-50 vs EfficientNet-B0, weighted vs unweighted) overlap within their CIs and should be repeated
+        over 3--5 seeds before drawing firm conclusions.
+  \item \textbf{Limited tuning budget.} Learning rates, epochs and the unfreezing schedule were set from common
+        practice, not searched, because of the 6\,GB GPU. Gradual unfreezing in particular might do better with a
+        longer schedule.
+  \item \textbf{Under-confident probabilities.} The final model's raw probabilities are under-confident (ECE
+        \RFineECETTA) and should be temperature-scaled before being read as risk scores.
+  \item \textbf{Dataset scope.} HAM10000 comes from two centres and mostly fair skin types. Performance on darker
+        skin, on other dermatoscopes, or on clinical (non-dermatoscopic) photographs is untested.
+\end{itemize}
+
+\subsection{Ethical considerations}
+This is a course project on a public research dataset (CC BY-NC 4.0). It is \emph{not} a medical device and must
+not be used for diagnosis. In any clinical use, the most costly error is a missed melanoma, so recall on the
+malignant classes and calibrated uncertainty matter more than overall accuracy. The model would also need
+validation across skin types to avoid unequal performance between patient groups.
+
+\subsection{Future work}
+\begin{itemize}
+  \item Re-split by lesion using HAM10000 metadata and re-evaluate, to remove the leakage.
+  \item Repeat every run over 5 seeds and report mean $\pm$ standard deviation; tune per-class decision thresholds
+        and the temperature on the validation split.
+  \item Add hair-removal and vignette-aware preprocessing, which Grad-CAM suggests is needed.
+  \item Compare stronger backbones (ConvNeXt, Vision Transformers, dermatology-specific foundation models) and
+        larger input sizes using the same pipeline~\cite{medmnistplus}.
+  \item Test external generalisation on ISIC 2019/2020 images.
+\end{itemize}
+
+\subsection{Conclusion}
+For a small, imbalanced medical-imaging dataset, ImageNet transfer learning with \emph{full} fine-tuning and
+discriminative learning rates turned a weak from-scratch baseline (\ScratchFOne\% macro-F1) into a strong
+classifier (\RFineFOneTTA\% macro-F1, \RFineAccTTA\% accuracy with TTA). This was done on a single 6\,GB consumer
+GPU in about an hour of total training. The comparison also shows that the details matter: whether to freeze
+or fine-tune, how to handle class imbalance, and how to evaluate (macro-F1, confidence intervals, calibration,
+leakage checks). These choices change both the numbers and the conclusions one should draw from them.

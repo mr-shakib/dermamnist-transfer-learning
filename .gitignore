@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+data/
+checkpoints/
+report/build/
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
+report/*.lof
+report/*.lot
+report/*.fls
+report/*.fdb_latexmk
+report/*.synctex.gz
+submission/

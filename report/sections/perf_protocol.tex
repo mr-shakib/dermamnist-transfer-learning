@@ -1,0 +1,21 @@
+\subsection{Evaluation protocol and metrics}
+Each run is evaluated once on the 2{,}005-image test split, using the checkpoint chosen on validation
+macro-F1. With $\mathrm{TP}_c$, $\mathrm{FP}_c$, $\mathrm{FN}_c$ counted one-vs-rest for each class $c$:
+\begin{itemize}
+  \item \textbf{Accuracy}: fraction of correct predictions. This is the official MedMNIST metric, but it is
+        dominated by \texttt{nv}.
+  \item \textbf{Balanced accuracy}: mean per-class recall,
+        $\frac1K\sum_c \mathrm{TP}_c/(\mathrm{TP}_c+\mathrm{FN}_c)$.
+  \item \textbf{Macro-F1} (primary): unweighted mean of per-class
+        $F_1 = 2\,\mathrm{P}_c\mathrm{R}_c/(\mathrm{P}_c+\mathrm{R}_c)$. Every class counts equally, including
+        melanoma and the rare classes.
+  \item \textbf{Macro AUC}: mean one-vs-rest area under the ROC curve. It is threshold-free and is the second
+        official MedMNIST metric.
+  \item \textbf{Expected calibration error (ECE)}~\cite{guo2017}: with 15 equal-width confidence bins $B_m$,
+        $\mathrm{ECE} = \sum_m \frac{|B_m|}{n}\,\big|\mathrm{acc}(B_m) - \mathrm{conf}(B_m)\big|$. Lower is better.
+        This matters when predicted probabilities are used for triage.
+  \item \textbf{95\% confidence intervals}: percentile bootstrap over 1{,}000 resamples of the test set.
+\end{itemize}
+\textbf{Test-time augmentation (TTA)} averages the softmax outputs over the 8 dihedral transforms of each
+image (4 rotations $\times$ \{identity, horizontal flip\}). These are exactly the symmetries the model saw
+during training. Whether the best model uses TTA is also decided on the validation split.

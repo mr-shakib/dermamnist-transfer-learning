@@ -1,0 +1,20 @@
+Skin-lesion datasets are small and dominated by benign nevi, which makes it hard to train deep networks from
+scratch. This report addresses \textbf{Task~2 (CNN / Transfer Learning / Fine-tuning)} by fine-tuning
+ImageNet-pretrained CNNs on \textbf{DermaMNIST}, the seven-class MedMNIST version of the HAM10000 dermatoscopic
+dataset (10{,}015 images, 224$\times$224). A data analysis shows a 58.7\,:\,1 class imbalance, a strong colour
+shift from ImageNet, and a small amount of same-lesion leakage between the official splits. Under one
+reproducible pipeline (class-weighted loss, augmentation, validation-based model selection), we compare seven
+configurations: a CNN trained from scratch; feature extraction, full fine-tuning with discriminative learning
+rates and gradual unfreezing of ResNet-50 and EfficientNet-B0; and a class-weighting ablation. Transfer learning
+is decisive. Test macro-F1 rises from \ScratchFOne\% (scratch) to \RFrozenFOne\% with a frozen ResNet-50 and to
+\RFineFOne\% with full fine-tuning. Gradual unfreezing (\RGradFOne\%) did not help within a 12-epoch budget, and
+class weighting traded calibration for minority-class recall. The selected model, ResNet-50 fully fine-tuned with
+8-view test-time augmentation, reaches \textbf{\RFineAccTTA\% accuracy}, \textbf{\RFineFOneTTA\% macro-F1}
+(95\% CI \RFineFOneTTACI) and \textbf{macro-AUC \RFineAUCTTA} on the held-out test set, about 10 accuracy points
+above the official MedMNIST v2 baselines. Grad-CAM and t-SNE show lesion-focused evidence and well-separated
+class clusters after fine-tuning, while also pointing to hair and vignetting artefacts. All code, logs and
+figures are public.
+
+\vspace{0.3em}
+\textbf{Keywords:} transfer learning, fine-tuning, convolutional neural networks, ResNet-50, EfficientNet,
+dermatoscopy, skin-lesion classification, class imbalance, DermaMNIST, HAM10000.

@@ -1,0 +1,56 @@
+\section{Additional results}
+\label{app:extra}
+
+\subsection{Effect of test-time augmentation on every run}
+\begin{table}[H]
+\centering
+\caption{Test metrics without and with 8-view dihedral TTA (4 rotations $\times$ horizontal flip, softmax
+averaged).}
+\label{tab:tta}
+\small
+\begin{tabular}{lrrrrrr}
+\toprule
+ & \multicolumn{2}{c}{Accuracy (\%)} & \multicolumn{2}{c}{Macro-F1 (\%)} & \multicolumn{2}{c}{Macro-AUC} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Run & single & TTA & single & TTA & single & TTA \\
+\midrule
+\inputrows{generated/tta_table.tex}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Training cost}
+\begin{table}[H]
+\centering
+\caption{Training cost on the GTX 1660 SUPER (FP32, batch 32). Peak memory is the PyTorch allocator peak,
+including the cuDNN workspace.}
+\label{tab:compute}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Run & s / epoch & train time (min) & peak GPU mem.\ (GB) \\
+\midrule
+\inputrows{generated/compute_table.tex}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Common hyper-parameters}
+\begin{table}[H]
+\centering
+\caption{Hyper-parameters shared by all runs.}
+\label{tab:hparams}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+Input & $224\times224$ RGB, ImageNet mean/std normalisation \\
+Train augmentation & RandomResizedCrop (scale 0.75--1, ratio 0.9--1.1), H/V flip, rot90, ColorJitter (0.2, 0.2, 0.15, 0.02) \\
+Optimiser & AdamW, $\beta=(0.9,0.999)$, weight decay $10^{-4}$, gradient clip 5.0 \\
+Schedule & 1-epoch linear warm-up, cosine decay to 0 (per step) \\
+Batch size & 32 (train), 64 (evaluation) \\
+Loss & cross-entropy, label smoothing 0.05, $\sqrt{\text{inverse-frequency}}$ class weights \\
+Regularisation & dropout 0.3 before the classifier, weight decay, augmentation \\
+Selection & best validation macro-F1; early-stopping patience 6 (8 for scratch) \\
+Seed & 42 \\
+\bottomrule
+\end{tabularx}
+\end{table}

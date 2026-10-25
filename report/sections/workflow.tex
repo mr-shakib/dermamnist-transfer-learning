@@ -1,0 +1,91 @@
+\section{Workflow}
+\label{sec:workflow}
+
+Figure~\ref{fig:workflow} shows the end-to-end pipeline. Each box maps to one script in the codebase, so
+the whole study can be re-run with \texttt{bash scripts/run\_all.sh}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=0.55cm and 0.45cm,
+  box/.style={draw=#1!70!black, fill=#1!12, rounded corners=3pt, minimum height=1.25cm,
+              text width=3.25cm, align=flush center, font=\footnotesize, line width=0.6pt},
+  box/.default=diublue,
+  arr/.style={-{Stealth[length=2.2mm]}, line width=0.7pt, color=ink2},
+  lab/.style={font=\scriptsize\itshape, color=ink2}]
+  % row 1: data
+  \node[box] (src) {\textbf{Data source}\\ Zenodo MedMNIST+\\ {\scriptsize\texttt{dermamnist\_224.npz}}};
+  \node[box, right=of src] (prep) {\textbf{Preparation}\\ MD5 check, memory-mapped \texttt{.npy}\\ {\scriptsize\texttt{prepare\_data.py}}};
+  \node[box, right=of prep] (eda) {\textbf{Data analysis}\\ balance, colour,\\ leakage audit (\texttt{eda.py})};
+  \node[box, right=of eda] (aug) {\textbf{Preprocessing}\\ crop, flips, rot90,\\ colour jitter, norm.};
+  % row 2: modelling
+  \node[box=diugreen, below=1.1cm of aug] (models) {\textbf{Model zoo}\\ SimpleCNN, ResNet-50,\\ EfficientNet-B0};
+  \node[box=diugreen, left=of models] (strat) {\textbf{Transfer strategy}\\ scratch / frozen /\\ fine-tune / gradual};
+  \node[box=diugreen, left=of strat] (train) {\textbf{Training}\\ AdamW, warm-up + cosine,\\ weighted CE, FP32};
+  \node[box=diugreen, left=of train] (select) {\textbf{Model selection}\\ best validation macro-F1, early stopping};
+  % row 3: evaluation
+  \node[box=orange, below=1.1cm of select] (eval) {\textbf{Test evaluation}\\ metrics + bootstrap CI,\\ 8-view TTA};
+  \node[box=orange, right=of eval] (explain) {\textbf{Explainability}\\ Grad-CAM,\\ t-SNE embeddings};
+  \node[box=orange, right=of explain] (figs) {\textbf{Aggregation}\\ tables \& figures\\ \texttt{make\_figures.py}};
+  \node[box=orange, right=of figs] (report) {\textbf{Report}\\ this document\\ (\LaTeX)};
+  \draw[arr] (src) -- (prep);
+  \draw[arr] (prep) -- (eda);
+  \draw[arr] (eda) -- (aug);
+  \draw[arr] (aug) -- (models);
+  \draw[arr] (models) -- (strat);
+  \draw[arr] (strat) -- (train);
+  \draw[arr] (train) -- (select);
+  \draw[arr] (select) -- (eval);
+  \draw[arr] (eval) -- (explain);
+  \draw[arr] (explain) -- (figs);
+  \draw[arr] (figs) -- (report);
+\end{tikzpicture}
+\caption{End-to-end workflow. Blue: data stages; green: modelling and training; orange: evaluation and
+reporting. The test split is used only in the orange stages, after a checkpoint has been chosen on the
+validation split.}
+\label{fig:workflow}
+\end{figure}
+
+\subsection{Step-by-step description}
+\begin{enumerate}[leftmargin=1.4em]
+  \item \textbf{Acquisition.} The 224$\times$224 DermaMNIST archive (\DatasetSizeMB\,MB) is downloaded from the
+        MedMNIST+ Zenodo record and checked with an MD5 checksum.
+  \item \textbf{Preparation.} The three official splits are written as separate \texttt{.npy} files and
+        \emph{memory-mapped}, so the 1.5\,GB uint8 tensor is never fully loaded into RAM. This matters on the
+        16\,GB development machine.
+  \item \textbf{Data analysis} (Section~\ref{sec:data}). Class counts, colour statistics, mean images, and
+        exact and near-duplicate checks between splits.
+  \item \textbf{Preprocessing and augmentation.} Training images go through
+        \texttt{RandomResizedCrop}(224, scale 0.75--1.0), horizontal and vertical flips, random multiples of
+        90\textdegree{} rotation (dermatoscopic images have no canonical orientation), mild colour jitter
+        (brightness/contrast 0.2, saturation 0.15, hue 0.02) and ImageNet mean/std normalisation. Validation and
+        test images are only normalised.
+  \item \textbf{Training} (Section~\ref{sec:modeling}). Every configuration uses AdamW, a one-epoch linear
+        warm-up followed by cosine decay, FP32 arithmetic (Section~\ref{sec:modeling} explains why not FP16), gradient
+        clipping at norm 5 and class-weighted cross-entropy with label smoothing 0.05.
+  \item \textbf{Model selection.} After each epoch the model is scored on the validation split. The checkpoint
+        with the highest \emph{validation macro-F1} is kept, and training stops early if there is no improvement
+        for 6 epochs (8 for the scratch baseline).
+  \item \textbf{Evaluation} (Section~\ref{sec:performance}). The selected checkpoint is scored once on the test
+        split, with and without 8-view dihedral TTA. Metrics come with 1{,}000-resample bootstrap confidence
+        intervals.
+  \item \textbf{Explainability.} Grad-CAM heat-maps and t-SNE plots of the penultimate-layer embeddings, for the
+        best model.
+\end{enumerate}
+
+\subsection{Experimental environment}
+\begin{table}[H]
+\centering
+\caption{Hardware and software used for every experiment.}
+\label{tab:env}
+\small
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+GPU & NVIDIA GeForce GTX 1660 SUPER, 6\,GB GDDR6 (Turing, no tensor cores) \\
+CPU / RAM & AMD Ryzen 5 5500 (6 cores / 12 threads) / 16\,GB \\
+OS & Ubuntu 26.04 LTS, NVIDIA driver 595.91 \\
+Software & Python 3.12, PyTorch~\cite{pytorch} \TorchVersion{} (CUDA 12.6), torchvision 0.29.1, scikit-learn 1.9.1 \\
+Seeding & global seed 42 for Python, NumPy and PyTorch (cuDNN autotuning on, so not bit-exact) \\
+\bottomrule
+\end{tabularx}
+\end{table}

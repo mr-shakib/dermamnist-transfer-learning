@@ -1,0 +1,8 @@
+{
+  "best_epoch": 11,
+  "best_val_macro_f1": 0.7337524797805323,
+  "epochs_run": 12,
+  "total_train_time_s": 397.216783285141,
+  "mean_epoch_time_s": 31.69656964143117,
+  "peak_gpu_mem_gb": 3.6550145149230957
+}

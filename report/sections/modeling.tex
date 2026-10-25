@@ -1,0 +1,110 @@
+\section{Modelling}
+\label{sec:modeling}
+
+\subsection{Architectures}
+
+\paragraph{Baseline: SimpleCNN trained from scratch.} A VGG-style network~\cite{vgg} with five blocks. Each
+block has two $3\times3$ convolution--BatchNorm--ReLU layers followed by $2\times2$ max-pooling, with widths
+16-32-64-128-256. Global average pooling, dropout ($p=0.3$) and a linear layer produce the 7 logits. It has
+\textbf{1.18\,M} parameters, all randomly initialised (PyTorch default Kaiming-uniform). This baseline shows what is achievable
+\emph{without} transfer learning.
+
+\paragraph{ResNet-50~\cite{resnet}.} A 50-layer residual network with bottleneck blocks arranged in four stages
+(\texttt{layer1}--\texttt{layer4}, output stride 32), followed by global average pooling. We use the torchvision
+\texttt{IMAGENET1K\_V2} weights (80.86\% ImageNet top-1, 4.09\,GFLOPs). The 1000-way classifier is replaced by
+dropout ($p=0.3$) and a $2048\to7$ linear layer, giving \textbf{23.52\,M} parameters.
+
+\paragraph{EfficientNet-B0~\cite{efficientnet}.} A compound-scaled network built from inverted-residual MBConv
+blocks with squeeze-and-excitation and SiLU activations. We use torchvision \texttt{IMAGENET1K\_V1} weights
+(77.69\% ImageNet top-1, 0.39\,GFLOPs, about 10$\times$ cheaper than ResNet-50). The head is again dropout
+followed by a $1280\to7$ linear layer, giving \textbf{4.02\,M} parameters.
+
+\subsection{Transfer-learning strategies}
+Let $f_\theta$ be the pretrained backbone and $g_\phi$ the new classification head. We compare:
+
+\begin{enumerate}
+  \item \textbf{Scratch} (baseline only): $\theta,\phi$ randomly initialised, all trained with learning rate
+        $10^{-3}$.
+  \item \textbf{Feature extraction (frozen backbone).} $\theta$ is fixed at its ImageNet values and BatchNorm is
+        kept in inference mode (running statistics are not updated). Only $g_\phi$ is trained, with learning
+        rate $10^{-3}$. This is the cheapest option: no gradients flow through the backbone.
+  \item \textbf{Full fine-tuning with discriminative learning rates.} All parameters are trained, but the
+        backbone uses a $10\times$ smaller learning rate ($\eta_\theta = 10^{-4}$) than the randomly initialised
+        head ($\eta_\phi = 10^{-3}$). The new head can adapt fast while the pretrained features are only
+        gently adjusted, which limits catastrophic forgetting.
+  \item \textbf{Gradual unfreezing} (ULMFiT-style~\cite{ulmfit}). Training starts with the head only, and one
+        backbone stage is unfrozen every two epochs, from the output side inwards (Table~\ref{tab:gradual}).
+        Each stage nearer the input gets half the learning rate of the stage above it, because early layers
+        hold generic edge and colour detectors that need little change~\cite{yosinski2014}.
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\caption{Gradual-unfreezing schedule for ResNet-50 (12 epochs).}
+\label{tab:gradual}
+\begin{tabular}{llrr}
+\toprule
+Epochs & Trainable modules & Peak LR of newest stage & Trainable params \\
+\midrule
+1--2 & head & $10^{-3}$ (head) & 14\,K \\
+3--4 & + \texttt{layer4} & $1.0\times10^{-4}$ & 14.98\,M \\
+5--6 & + \texttt{layer3} & $5.0\times10^{-5}$ & 22.08\,M \\
+7--8 & + \texttt{layer2} & $2.5\times10^{-5}$ & 23.30\,M \\
+9--12 & + stem, \texttt{layer1} & $1.25\times10^{-5}$ & 23.52\,M \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Loss function and class imbalance}
+We minimise class-weighted cross-entropy with label smoothing~\cite{labelsmoothing} $\varepsilon = 0.05$:
+\begin{equation}
+\mathcal{L} = \frac{1}{\sum_i w_{y_i}}\sum_{i}\Big[(1-\varepsilon)\,w_{y_i}\big(-\log p_{i,y_i}\big)
+ + \frac{\varepsilon}{K}\sum_{c=1}^{K} w_c\big(-\log p_{i,c}\big)\Big],
+\end{equation}
+where $p_{i,c}$ is the softmax probability of class $c$ for image $i$ and $K=7$ (this is exactly PyTorch's
+\texttt{CrossEntropyLoss(weight=w, label\_smoothing=$\varepsilon$)}). The class weights are the \emph{square root} of the
+inverse class frequency, rescaled to mean 1:
+\begin{equation}
+w_c \propto \Big(\frac{N}{K\,n_c}\Big)^{1/2}.
+\end{equation}
+Full inverse-frequency weighting would weight \texttt{df} 59 times more than \texttt{nv}; with only 80
+\texttt{df} images, that tends to overfit the rare classes. The square root is a milder compromise. The
+resulting weights are
+\texttt{akiec} 1.11, \texttt{bcc} 0.88, \texttt{bkl} 0.60, \texttt{df} 1.87, \texttt{mel} 0.60,
+\texttt{nv} 0.24, \texttt{vasc} 1.68. Section~\ref{sec:ablation} compares this with unweighted cross-entropy.
+
+\subsection{Optimisation}
+We use AdamW~\cite{adamw} ($\beta=(0.9, 0.999)$, weight decay $10^{-4}$) with a batch size of 32. The learning
+rate rises linearly over the first epoch (warm-up) and then follows a cosine decay to zero~\cite{sgdr}:
+\begin{equation}
+\eta_t = \eta_{\max}\cdot \tfrac12\Big(1+\cos\big(\pi\,\tfrac{t - t_w}{T - t_w}\big)\Big), \quad t \ge t_w .
+\end{equation}
+Gradients are clipped to an $\ell_2$ norm of 5. We trained in FP32. Our benchmark showed FP16 autocast to be
+3.3$\times$ \emph{slower} on this GPU (34 vs 112 img/s for ResNet-50), because the GTX 16-series has no tensor
+cores. Mixed precision is still available in the code (\texttt{--amp}) for tensor-core GPUs.
+
+\begin{table}[H]
+\centering
+\caption{Configuration of the seven experiments. All share the data pipeline, the loss (unless stated),
+AdamW, warm-up + cosine schedule, batch size 32 and seed 42.}
+\label{tab:runs}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llllrlll}
+\toprule
+ID & Run name (code) & Backbone & Strategy & Ep. & LR head & LR backbone & Loss \\
+\midrule
+E1 & \texttt{scratch\_cnn} & SimpleCNN & scratch & 30 & $10^{-3}$ & (all layers $10^{-3}$) & weighted CE \\
+E2 & \texttt{resnet50\_frozen} & ResNet-50 & frozen & 10 & $10^{-3}$ & frozen & weighted CE \\
+E3 & \texttt{effnetb0\_frozen} & EffNet-B0 & frozen & 10 & $10^{-3}$ & frozen & weighted CE \\
+E4 & \texttt{resnet50\_finetune} & ResNet-50 & fine-tune & 12 & $10^{-3}$ & $10^{-4}$ & weighted CE \\
+E5 & \texttt{effnetb0\_finetune} & EffNet-B0 & fine-tune & 12 & $10^{-3}$ & $10^{-4}$ & weighted CE \\
+E6 & \texttt{resnet50\_gradual} & ResNet-50 & gradual & 12 & $10^{-3}$ & $10^{-4}\!\to\!1.25{\cdot}10^{-5}$ & weighted CE \\
+E7 & \texttt{resnet50\_finetune\_noweights} & ResNet-50 & fine-tune & 12 & $10^{-3}$ & $10^{-4}$ & plain CE \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Model selection and early stopping.} After every epoch we compute validation macro-F1 and keep the
+checkpoint with the best value. Training stops when there has been no improvement for 6 epochs (8 for E1).
+The test split is never used for any decision; it is evaluated once per run, at the end.

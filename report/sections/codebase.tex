@@ -1,0 +1,40 @@
+\section{Codebase}
+\label{sec:codebase}
+
+\textbf{Repository:} \href{\repo}{\texttt{\repo}}
+
+The repository contains all source code, the experiment script, the per-epoch training logs, evaluation
+outputs (JSON), every figure, and the \LaTeX{} source of this report. Model checkpoints and the dataset are
+excluded because of their size; \texttt{scripts/run\_all.sh} downloads the data and regenerates both.
+
+\subsection*{Repository layout}
+\begin{lstlisting}
+dermamnist-transfer-learning/
+|-- src/
+|   |-- common.py          paths, class names, memory-mapped Dataset, augmentation, class weights
+|   |-- prepare_data.py    MD5-checked .npz -> per-split .npy conversion
+|   |-- eda.py             data analysis + figures + duplicate/leakage audit
+|   |-- models.py          SimpleCNN, ResNet-50, EfficientNet-B0, stage split, embeddings
+|   |-- train.py           scratch / frozen / finetune / gradual training with model selection
+|   |-- metrics.py         accuracy, balanced acc., macro-F1, AUC, ECE, bootstrap CIs
+|   |-- evaluate.py        test evaluation with and without 8-view TTA
+|   |-- make_figures.py    comparison figures and LaTeX tables
+|   |-- gradcam.py         Grad-CAM and t-SNE for the selected model
+|   |-- report_numbers.py  numbers quoted in this report, as LaTeX macros
+|   `-- plot_style.py      shared colour-blind-safe figure style
+|-- scripts/run_all.sh     reproduces every experiment, table and figure
+|-- results/               eda.json, summary.json, runs/<name>/{config,history,eval}, figures/, logs/
+|-- report/                LaTeX source and compiled PDF of this report
+`-- requirements.txt
+\end{lstlisting}
+
+\subsection*{Reproducing the results}
+\begin{lstlisting}
+git clone https://github.com/mr-shakib/dermamnist-transfer-learning.git
+cd dermamnist-transfer-learning
+python3.12 -m venv .venv
+.venv/bin/pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+.venv/bin/pip install -r requirements.txt
+bash scripts/run_all.sh          # about 70 min on a GTX 1660 SUPER
+cd report && latexmk -pdf main.tex
+\end{lstlisting}

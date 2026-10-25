@@ -1,0 +1,51 @@
+\section{Introduction}
+\label{sec:intro}
+
+\subsection{Background and motivation}
+Skin cancer is among the most common cancers worldwide, and early recognition of malignant lesions such as
+melanoma and basal cell carcinoma strongly improves outcomes. Dermatoscopy (dermoscopy) is a non-invasive
+imaging technique that magnifies sub-surface skin structures, but reading dermatoscopic images reliably takes
+years of training. Deep convolutional neural networks (CNNs) have reached dermatologist-level accuracy on this
+problem when trained on very large image collections~\cite{esteva2017}. Most clinical settings, however, have only
+a few thousand labelled images, and these are heavily skewed towards benign nevi. In that low-data, imbalanced
+regime, \emph{transfer learning} is the standard remedy: a network pretrained on a large generic dataset
+(ImageNet) is reused, and only adapted to the target domain~\cite{yosinski2014,kornblith2019}.
+
+This assignment follows \textbf{Task~2 (CNN / Transfer Learning / Fine-tuning)} of the CT-1 brief:
+\emph{fine-tune a pretrained CNN (e.g.\ ResNet, EfficientNet) on a domain-specific dataset (e.g.\ medical
+images)}, with exposure to \emph{transfer learning, freezing/unfreezing layers and domain adaptation}. We chose
+medical images: the seven-class DermaMNIST benchmark~\cite{medmnistv2}, derived from the HAM10000 dermatoscopic
+collection~\cite{ham10000}. We use the 224$\times$224 version released with MedMNIST+~\cite{medmnistplus}, so
+ImageNet models see images at their native input resolution.
+
+\subsection{Problem statement}
+Given an RGB dermatoscopic image $x \in [0,255]^{224\times224\times3}$, predict one of seven diagnostic
+categories $y \in \{\texttt{akiec},\texttt{bcc},\texttt{bkl},\texttt{df},\texttt{mel},\texttt{nv},\texttt{vasc}\}$.
+A useful model must do well on the \emph{rare} classes, including melanoma (\texttt{mel}). A model that always
+predicts the majority class \texttt{nv} already reaches \MajorityAcc\% test accuracy, so plain accuracy alone
+can mislead. We therefore treat \textbf{macro-F1} as the primary metric and also report balanced accuracy,
+macro one-vs-rest AUC and calibration.
+
+\subsection{Objectives}
+\begin{enumerate}
+  \item Analyse the dataset: class balance, colour statistics and possible train/test leakage.
+  \item Build a reproducible PyTorch pipeline: preprocessing, augmentation, imbalance-aware training,
+        validation-based model selection and evaluation.
+  \item Compare transfer-learning strategies on two pretrained backbones (ResNet-50~\cite{resnet} and
+        EfficientNet-B0~\cite{efficientnet}) against a CNN trained from scratch:
+        (i)~\emph{feature extraction} (frozen backbone), (ii)~\emph{full fine-tuning} with discriminative learning
+        rates, and (iii)~\emph{gradual unfreezing}~\cite{ulmfit}.
+  \item Measure the effect of class-weighted loss (ablation) and of test-time augmentation (TTA).
+  \item Explain the predictions with Grad-CAM~\cite{gradcam} and t-SNE embeddings, and discuss limitations.
+\end{enumerate}
+
+\subsection{Contributions of this report}
+\begin{itemize}
+  \item A controlled comparison of \NumRuns{} training configurations. All of them use the same data pipeline,
+        the same seed and the same validation-based checkpoint selection; the test set is used only once, for
+        the final numbers.
+  \item An honest evaluation: bootstrap 95\% confidence intervals, per-class metrics, calibration (ECE) and a
+        near-duplicate audit of the official splits.
+  \item A public, documented codebase that rebuilds every number and figure in this report with one command
+        (Section~\ref{sec:codebase}).
+\end{itemize}
